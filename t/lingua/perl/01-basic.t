@@ -12,3 +12,12 @@ is $model->name, '01-basic.t';
 
 __DATA__
 package Foo;
+
+use Carp qw(croak);
+
+sub some_method {
+    my $self = shift;
+    croak "Got nothing!" unless $self;
+    
+    say "yay";
+}
