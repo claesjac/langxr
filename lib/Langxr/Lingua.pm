@@ -26,6 +26,19 @@ sub parse_fh {
 
 {
     my %Extension;
+
+    # Load extension map
+    open my $in, "<", "share/extension-map" or die "Can't load extension map: $!";
+
+    while (<$in>) {
+        chomp;
+        my ($parser, @exts) = split /\s+/, $_;
+        $parser =~ tr/-/_/;
+        $Extension{$_} = "Langxr::Lingua::${parser}" for @exts;
+    }
+
+    close $in;
+
     sub _parser_for_file {
         my $path = shift;
 
@@ -34,20 +47,7 @@ sub parse_fh {
         my $parser;
         
         if ($ext) {
-            # If extension is empty it probably hasn't been loaded
-            unless (%Extension) {
-                open my $in, "<", "etc/extension-map" or die "Can't load extension map: $!";
-
-                while (<$in>) {
-                    chomp;
-                    my ($parser, @exts) = split /\s+/, $_;
-                    $parser =~ tr/-/_/;
-                    $Extension{$_} = "Langxr::Lingua::${parser}" for @exts;
-                }
-
-                close $in;
-            }
-            
+            # If extension is empty it probably hasn't been loaded                        
             croak "Can't find parser that handles '.${ext}'" unless exists $Extension{$ext};
             
             $parser = $Extension{$ext};

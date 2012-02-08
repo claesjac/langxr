@@ -1,19 +1,31 @@
 package Langxr::Lingua::Perl;
 
-use feature qw(say);
+use 5.014;
+use warnings;
 
-use namespace::autoclean;
+use namespace::clean;
+
 use Moose;
-
-use Data::Dumper qw(Dumper);
+use Module::Find qw(usesub);
 use PPI;
+
+# Runs once at loading
+{
+    my @modules = usesub __PACKAGE__;
+    
+    for my $module (@modules) {
+        if (my $register = $module->can("register")) {
+            $register->();
+        }
+    }
+}
 
 sub parse {
     my ($self, $source) = @_;
     
     my $doc = PPI::Document->new(\$source);
     $doc->index_locations();
-
+    
     $self->handle_node($doc);
 }
 
@@ -28,9 +40,13 @@ sub handle_node {
     
     for my $child ($node->elements) {
         my $class = $child->class;
-        
+
         if (my $handler = $Handler{$class}) {
             $self->$handler($child);
+        }
+        
+        if ($child->isa("PPI::Node")) {
+            $self->handle_node($child);
         }
     }
 }

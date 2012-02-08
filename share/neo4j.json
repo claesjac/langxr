@@ -1,0 +1,55 @@
+{
+    "name": "Neo4j",
+    "version": "1.6",
+    "base_url": "http://localhost:7474/db/data/",
+    "methods": {
+        "get_service_root": {
+            "path": "/",
+            "method": "GET"
+        },
+        "create_node": {
+            "path": "/node",
+            "method": "POST",
+            "required_payload": true
+        },
+        "get_node": {
+            "path": "/node/:id",
+            "method": "GET",
+            "required_params": [
+                "id"
+            ],
+            "expected_status": [
+                200,
+                404
+            ]             
+        },
+        "delete_node": {
+            "path": "/node/:id",
+            "method": "DELETE",
+            "required_params": [
+                "id"
+            ],
+            "expected_status": [
+                204,
+                404,
+                409
+            ]
+        },
+        "get_relation": {
+            "path": "/relationship/:id",
+            "method": "GET",
+            "required_params": [
+                "id"
+            ]
+        },
+        "create_relation": {
+            "path": "/node/:from/relationships",
+            "method": "POST",
+            "required_params": [
+                "from"
+            ],
+            "required_payload": true
+        }
+    },
+    "formats": ["json"]
+}

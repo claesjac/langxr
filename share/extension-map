@@ -1,4 +1,5 @@
 Perl            pl PL pm t
+Perl::XS        xs
 C               c 
 Objective-C     m
 Java            java
